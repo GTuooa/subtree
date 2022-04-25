@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>观察者模式</title>
+  </head>
+  <body></body>
+  <script>
+    const isFunc = (value) =>
+      Object.prototype.toString.call(value).includes("Function");
+
+    const observable = (obj, observer) => {
+      let queuedObservers = new Set(); //观察者行为集合
+
+      for (const key in observer) {
+        if (observer.hasOwnProperty(key) && isFunc(observer[key])) {
+          queuedObservers.add(observer[key]);
+        }
+      }
+
+      return new Proxy(obj, {
+        set: (target, key, value, receiver) => {
+          //代理set方法
+          // console.log("receiver", receiver);
+          const result = Reflect.set(target, key, value, receiver);
+          // console.log("target", target); //修改后的值
+          queuedObservers.forEach((observer, result) => observer(target));
+          return result;
+        },
+      });
+    };
+
+    const person = observable(
+      {
+        name: "张三",
+        age: 20,
+      },
+      {
+        print: (person) => {
+          console.log(`${person.name}, ${person.age}`);
+        },
+        log: () => {
+          console.log("已经修改属性");
+        },
+      }
+    );
+    person.name = "李四";
+    console.log("测试");
+  </script>
+</html>

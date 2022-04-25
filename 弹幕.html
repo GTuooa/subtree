@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        position: relative;
+        margin: 0;
+        padding: 0;
+      }
+      .barrage {
+        width: 200px;
+        height: 50px;
+        border: 1px solid red;
+        text-align: center;
+        line-height: 50px;
+        animation: move 5s linear 1s forwards;
+        margin-top: 10px;
+        transform: translateX(100vw);
+      }
+      .barrage1 {
+        color: #245246;
+        animation-duration: 10s;
+      }
+      @keyframes move {
+        from {
+          transform: translateX(100vw);
+        }
+        to {
+          transform: translateX(-200px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="barrage">买一个电热毯</div>
+    <div class="barrage barrage1">!!!买一个电热毯!!!</div>
+    <button id="cancel">关闭弹幕</button>
+    <div id="time"></div>
+
+    <script>
+      const btn = document.getElementById("cancel");
+      const barrageList = [...document.getElementsByClassName("barrage")];
+      console.log(barrageList);
+      let show = true;
+      btn.onclick = () => {
+        if (show) {
+          barrageList.forEach((element) => {
+            element.style.opacity = 0;
+          });
+
+          btn.innerHTML = "显示弹幕";
+          show = false;
+        } else {
+          barrageList.forEach((element) => {
+            element.style.opacity = 1;
+          });
+          btn.innerHTML = "关闭弹幕";
+          show = true;
+        }
+      };
+
+      let maxAnimationDuration = 0,
+        idx = 0;
+
+      barrageList.forEach((v, i) => {
+        const animationDuration = Number(
+          getComputedStyle(v, null)["animation-duration"].replace("s", "")
+        );
+        if (animationDuration > maxAnimationDuration) {
+          maxAnimationDuration = animationDuration;
+          idx = i;
+        }
+      });
+
+      //动画结束 隐藏弹幕按钮
+      barrageList[idx].addEventListener("animationend", () => {
+        btn.style.display = "none";
+      });
+
+      // 倒计时
+      const timeHtml = document.getElementById("time");
+      let timer = null;
+      function restTime(dateStr, callback = () => {}) {
+        const totalSeconds = parseInt(
+          (new Date(dateStr).getTime() - new Date().getTime()) / 1000
+        ); //时间差的秒数
+
+        if (totalSeconds <= 0) {
+          callback();
+          return clearTimeout(timer);
+        } else {
+          timer = setTimeout(restTime, 1000, dateStr);
+        }
+
+        //计算出相差天数
+        const days = Math.floor(totalSeconds / (24 * 60 * 60));
+
+        //计算出不足一天小时数
+        const hours = Math.floor((totalSeconds / (60 * 60)) % 24);
+
+        //计算不足一小时的分钟数
+        const minutes = Math.floor((totalSeconds / 60) % 60);
+
+        //计算不足一分钟的秒数
+        const seconds = Math.round(totalSeconds % 60);
+
+        const str = `剩余${days}天 
+        ${String(hours).padStart(2, 0)}小时 
+        ${String(minutes).padStart(2, 0)}分 
+        ${String(seconds).padStart(2, 0)}秒`;
+        timeHtml.innerHTML = str;
+      }
+
+      // restTime("2020-12-18 15:00:00");
+    </script>
+  </body>
+</html>

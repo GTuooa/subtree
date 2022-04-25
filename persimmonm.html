@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<style>
+    .circle{
+        width: 184px;
+        height: 174px;
+        border-radius: 70%;
+        background-color: rgba(254, 92, 40, 1);
+        position: relative;
+        margin: 30% auto;
+        border: 1px solid rgba(0,0,0,.5);
+        background: linear-gradient(to bottom left, rgb(236, 126, 51), rgb(243, 134, 53));
+         box-shadow: 0px -6px 2px 2px rgba(217,107,32,1) inset;
+    }
+   .heart-wrap{
+       position: absolute;
+       width: 75px;
+       height: 75px;
+       left: 50%;
+       top: 10px;
+       transform: translateX(-50%);
+       text-align: center;
+      line-height: 80px;
+   }
+  .leaf {
+    border-radius: 50%;
+    background: rgb(129,196,43);
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 0;
+    transform-origin: 100% 100%;
+    /* box-shadow: 1px 1px 1px 2px rgba(0,0,0,.8); */
+    border: 1px solid black;
+  }
+  .leaf1 {
+    transform: rotate(90deg);
+    position: absolute;
+    left: -5px;
+    border-bottom: none;
+
+  }
+  .leaf2 {
+    transform: rotate(180deg);
+    position: absolute;
+    left: -5px;
+    top: -5px;
+    border-bottom: none;
+  }
+  .leaf3 {
+    transform: rotate(-90deg);
+    position: absolute;
+    top: -5px;
+    border-right: none;
+  }
+  .line {
+    width: 2px;
+    height: 50px;
+    border-radius: 100%;
+    background: #6DC75F;
+  }
+  .center_circle{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    /* background: radial-gradient(rgb(62, 125, 28), rgb(83, 177, 31)); */
+    background-color: rgb(70, 177, 25);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid rgb(48,45,38);
+
+
+  }
+  .c_circle{
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid rgb(48,45,38);
+    background-color: rgb(62, 125, 28);
+
+  }
+  .text{
+    animation: myfirst 3s ease-in-out 2s infinite;
+    color: orangered;
+  }
+  @keyframes myfirst{
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
+</style>
+<body>
+    <div class="circle">
+        <div class='heart-wrap'>
+            <div class="leaf"></div>
+            <div class="leaf leaf1"></div>
+            <div class="leaf leaf2"></div>
+            <div class="leaf leaf3"></div>
+            <div class="center_circle"></div>
+            <div class="c_circle"></div>
+            <!-- <div class="line"></div> -->
+        <!-- <span class='text'>想你</span> -->
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+</script>
+
+</html>

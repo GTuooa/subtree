@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>H5 本地数据库</title>
+  </head>
+  <style>
+    ul {
+      display: flex;
+      padding: 0;
+      margin: 0;
+    }
+    li {
+      width: 300px;
+      list-style: none;
+      border-right: 1px solid;
+      border-bottom: 1px solid;
+    }
+    #datatable {
+      border-top: 1px solid;
+      border-left: 1px solid;
+      border-right: 1px solid;
+    }
+  </style>
+
+  <body id="body">
+    <h1>使用本地数据库实现web留言本</h1>
+    <div>姓名：<input type="text" id="name" /></div>
+    <div>留言：<input type="text" id="memo" /></div>
+    <div><button type="button" id="button">保存</button></div>
+    <ul>
+      <li id="deleteTable">删除表</li>
+      <li id="logTable">列出数据库所有的表</li>
+      <li>时间</li>
+    </ul>
+
+    <div id="datatable">
+      <ul>
+        <li>姓名</li>
+        <li>内容</li>
+        <li>时间</li>
+      </ul>
+      <div id="dataList"></div>
+    </div>
+  </body>
+
+  <script type="text/javascript">
+    var body = document.getElementById("body");
+    var datatable = document.getElementById("datatable");
+    var db = openDatabase("MyData", "", "MyDatabase", 102400);
+    //[数据库名，版本号，数据库大描述，数据库大小]
+    var button = document.getElementById("button");
+    button.onclick = function () {
+      saveData();
+    };
+    body.onload = function () {
+      showAllData();
+    };
+
+    //删除数据库的表
+    var deleteTable = document.getElementById("deleteTable");
+    deleteTable.onclick = function () {
+      db.transaction(function (tx) {
+        tx.executeSql(
+          "DROP TABLE MsgData",
+          [],
+          function () {
+            showAllData();
+          },
+          function () {
+            console.log("失败", error);
+          }
+        );
+      });
+    };
+
+    function addData(name, message, time) {
+      function success(tx, rs) {
+        console.log("插入数据成功", rs);
+      }
+      function error(tx, error) {
+        console.log("失败", error);
+      }
+      db.transaction(function (tx) {
+        tx.executeSql(
+          "INSERT INTO MsgData VALUES(?,?,?)",
+          [name, message, time],
+          success,
+          error
+        );
+      });
+    }
+
+    function saveData() {
+      var name = document.getElementById("name").value;
+      var memo = document.getElementById("memo").value;
+      var time = new Date().getTime();
+      addData(name, memo, time);
+      showAllData();
+    }
+
+    function showAllData() {
+      db.transaction(function (tx) {
+        //创建表 MsgData
+        tx.executeSql(
+          "CREATE TABLE IF NOT EXISTS MsgData(name TEXT, message TEXT, time INTEGER)",
+          []
+        );
+        tx.executeSql("SELECT * FROM MsgData", [], function (tx, rs) {
+          removeAllData();
+          showData(rs);
+        });
+      });
+    }
+
+    function removeAllData() {
+      var dataList = document.getElementById("dataList");
+      datatable.removeChild(dataList);
+    }
+
+    function showData(data) {
+      var dataList = document.createElement("div");
+      dataList.id = "dataList";
+      for (var i = 0; i < data.rows.length; i++) {
+        var ul = document.createElement("ul");
+        var name = document.createElement("li");
+        var message = document.createElement("li");
+        var time = document.createElement("li");
+
+        name.innerHTML = data.rows.item(i).name;
+        message.innerHTML = data.rows.item(i).message;
+        time.innerHTML = new Date(data.rows.item(i).time).toLocaleString();
+        ul.appendChild(name);
+        ul.appendChild(message);
+        ul.appendChild(time);
+        dataList.appendChild(ul);
+      }
+      datatable.appendChild(dataList);
+    }
+
+    fetch("https://gtuooa.github.io/gitpage/data.json", {
+      method: "GET", // *GET, POST, PUT, DELETE, etc.
+    })
+      .then((response, ree) => {
+        return response.json();
+      })
+      .then((value) => {
+        console.log(value);
+      });
+  </script>
+  <script type="text/javascript" src="./index.js"></script>
+</html>
